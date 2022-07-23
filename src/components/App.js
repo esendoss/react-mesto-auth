@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
 import '../index.css'
 import '../App.css';
 import { api } from '../utils/Api';
@@ -9,16 +10,26 @@ import EditProfilePopup from './EditProfilePopup';
 import EditAvatarPopup from './EditAvatarPopup';
 import ImagePopup from './ImagePopup';
 import AddPlacePopup from './AddPlacePopup';
+
+import ProtectedRoute from './ProtectedRoute';
+import Register from './Register';
+import Login from './Login';
+import InfoTooltip from './InfoTooltip';
+
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
+
 
 function App() {
     const [isEditProfilePopupOpen, setisEditProfilePopupOpen] = useState(false);
     const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
     const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
+    const [isInfoTooltipPopupOpen, setIsInfoTooltipOpen] = useState(false);
     const [selectedCard, setSelectedCard] = useState({});
     const [cards, setCards] = useState([]);
-
     const [currentUser, setCurrentUser] = useState({});
+    const [email, setEmail] = useState('');
+    const [tooltipMessage, setTooltipMessage] = useState('');
+    const [tooltipStatus, setTooltipStatus] = useState(false);
 
     //Api
     useEffect(() => {
@@ -102,6 +113,11 @@ function App() {
     function handleEditAvatarClick() {
         setIsEditAvatarPopupOpen(!isEditAvatarPopupOpen);
     };
+    function handleInfoTooltipClick(tooltipMessage, tooltipStatus) {
+        setIsInfoTooltipOpen(true);
+        setTooltipMessage(tooltipMessage);
+        setTooltipStatus(tooltipStatus);
+    }
 
     function handleCardClick(card) {
         setSelectedCard(card);
@@ -112,37 +128,57 @@ function App() {
         setisEditProfilePopupOpen(false);
         setIsAddPlacePopupOpen(false);
         setIsEditAvatarPopupOpen(false);
+        setIsInfoTooltipOpen(false);
         setSelectedCard({});
     }
 
     return (
-        <CurrentUserContext.Provider value={currentUser}>
-            <div className="page">
-                <div className="page__box">
-                    <Header />
-                    <Main
-                        onEditProfile={handleEditProfileClick}
-                        onAddPlace={handleAddPlaceClick}
-                        onEditAvatar={handleEditAvatarClick}
-                        onCardClick={handleCardClick}
-                        onCardLike={handleCardLike}
-                        onCardDelete={handleCardDelete}
-                        cards={cards}
-                    />
-                    <Footer />
+        <BrowserRouter>
+            <CurrentUserContext.Provider value={currentUser}>
+                <div className="page">
+                    <div className="page__box">
+                        <Header email={email} />
+                        <Switch>
+                            <Route exact path='/'>
+                                <ProtectedRoute
+                                    component={Main}
+                                    email={email}
+                                    onEditProfile={handleEditProfileClick}
+                                    onAddPlace={handleAddPlaceClick}
+                                    onEditAvatar={handleEditAvatarClick}
+                                    onCardClick={handleCardClick}
+                                    onCardLike={handleCardLike}
+                                    onCardDelete={handleCardDelete}
+                                    cards={cards}
+                                />
+                                <EditProfilePopup isOpen={isEditProfilePopupOpen} onClose={closeAllPopups} onUpdateUser={handleUpdateUser} />
+                                <AddPlacePopup isOpen={isAddPlacePopupOpen} onClose={closeAllPopups} onAddPlace={handleAddPlaceSubmit} />
+                                <EditAvatarPopup isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups} onUpdateAvatar={handleUpdateAvatar} />
+                                <ImagePopup
+                                    card={selectedCard}
+                                    onClose={closeAllPopups}
+                                ></ImagePopup>
+                            </Route>
+                            //для регистрации пользователя
+                            <Route path="/signup">
+                                <Register />
+                            </Route>
+                            //для авторизации пользователя
+                            <Route path="/signin">
+                                <Login />
+                            </Route>
+
+                            <Redirect to={email ? '/' : '/signin'} />
+
+                        </Switch>
+                        <InfoTooltip isOpen={isInfoTooltipPopupOpen} tooltipMessage={tooltipMessage} tooltipStatus={tooltipStatus} onClose={closeAllPopups} />
+                        <Footer />
+                    </div>
+
                 </div>
 
-                <EditProfilePopup isOpen={isEditProfilePopupOpen} onClose={closeAllPopups} onUpdateUser={handleUpdateUser} />
-                <AddPlacePopup isOpen={isAddPlacePopupOpen} onClose={closeAllPopups} onAddPlace={handleAddPlaceSubmit} />
-                <EditAvatarPopup isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups} onUpdateAvatar={handleUpdateAvatar} />
-
-                <ImagePopup
-                    card={selectedCard}
-                    onClose={closeAllPopups}
-                >
-                </ImagePopup>
-            </div>
-        </CurrentUserContext.Provider>
+            </CurrentUserContext.Provider>
+        </BrowserRouter>
     );
 }
 
