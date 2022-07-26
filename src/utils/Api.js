@@ -108,7 +108,6 @@ class Api {
     })
       .then(this._checkError)
   }
-
 }
 
 const api = new Api({

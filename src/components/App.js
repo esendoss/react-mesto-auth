@@ -20,13 +20,12 @@ import InfoTooltip from './InfoTooltip';
 
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
 
-
 function App(props) {
     const [isEditProfilePopupOpen, setisEditProfilePopupOpen] = useState(false);
     const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
     const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
     const [isInfoTooltipPopupOpen, setIsInfoTooltipOpen] = useState(false);
-    const [selectedCard, setSelectedCard] = useState({});
+    const [selectedCard, setSelectedCard] = useState('');
     const [cards, setCards] = useState([]);
     const [currentUser, setCurrentUser] = useState({});
     const [email, setEmail] = useState('');
@@ -69,8 +68,8 @@ function App(props) {
     function handleAddPlaceSubmit(data) {
         api.addUserCard(data.name, data.link)
             .then((newCard) => {
-                setCards([newCard, ...cards]);
                 //console.log(newCard)
+                setCards([newCard, ...cards]);
                 closeAllPopups();
             })
             .catch(err => console.log(err));
@@ -106,7 +105,6 @@ function App(props) {
     function handleTokenCheck() {
         const token = localStorage.getItem('token');
         if (token) {
-            // проверяем токен пользователя
             Auth.checkToken(token)
                 .then((res) => {
                     if (res) {
@@ -131,7 +129,7 @@ function App(props) {
                     handleInfoTooltipClick('Неверный логин или пароль', false)
                 }
             })
-            .catch(err => handleInfoTooltipClick('Что-то пошло не так! Попробуйте ещё раз.', false));
+            .catch(handleInfoTooltipClick('Что-то пошло не так! Попробуйте ещё раз.', false));
     }
 
     function handleRegister(email, password) {
@@ -176,7 +174,7 @@ function App(props) {
         setIsAddPlacePopupOpen(false);
         setIsEditAvatarPopupOpen(false);
         setIsInfoTooltipOpen(false);
-        setSelectedCard({});
+        setSelectedCard('');
     }
 
     return (
@@ -197,13 +195,7 @@ function App(props) {
                                 onCardDelete={handleCardDelete}
                                 cards={cards}
                             />
-                            <EditProfilePopup isOpen={isEditProfilePopupOpen} onClose={closeAllPopups} onUpdateUser={handleUpdateUser} />
-                            <AddPlacePopup isOpen={isAddPlacePopupOpen} onClose={closeAllPopups} onAddPlace={handleAddPlaceSubmit} />
-                            <EditAvatarPopup isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups} onUpdateAvatar={handleUpdateAvatar} />
-                            <ImagePopup
-                                card={selectedCard}
-                                onClose={closeAllPopups}
-                            ></ImagePopup>
+
                         </Route>
                             //для регистрации пользователя
                         <Route path="/sign-up">
@@ -215,11 +207,18 @@ function App(props) {
                         </Route>
 
                         <Redirect to={email ? '/' : '/sign-in'} />
-
+                        <InfoTooltip isOpen={isInfoTooltipPopupOpen} tooltipMessage={tooltipMessage} tooltipStatus={tooltipStatus} onClose={closeAllPopups} />
                     </Switch>
-                    <InfoTooltip isOpen={isInfoTooltipPopupOpen} tooltipMessage={tooltipMessage} tooltipStatus={tooltipStatus} onClose={closeAllPopups} />
                     <Footer />
                 </div>
+                <EditProfilePopup isOpen={isEditProfilePopupOpen} onClose={closeAllPopups} onUpdateUser={handleUpdateUser} />
+                <AddPlacePopup isOpen={isAddPlacePopupOpen} onClose={closeAllPopups} onAddPlace={handleAddPlaceSubmit} />
+                <EditAvatarPopup isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups} onUpdateAvatar={handleUpdateAvatar} />
+                <ImagePopup
+                    card={selectedCard}
+                    onClose={closeAllPopups}
+                ></ImagePopup>
+
             </div>
         </CurrentUserContext.Provider>
     );
