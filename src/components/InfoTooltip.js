@@ -8,12 +8,14 @@ function InfoTooltip(props) {
 
     return (
         <div className={`popup ${props.isOpen && 'popup_opened'}`}>
-            <button className="popup__exit" type="button" onClick={props.onClose}>
-                <img className="popup__exit-sign" src={close} alt="Кнопка выхода" />
-            </button>
             <div className="popup__container">
-                <img className='popup__sign' src={status} />
-                <p className='popup__message'>{props.tooltipMessage}</p>
+                <button className="popup__exit" type="button" onClick={props.onClose}>
+                    <img className="popup__exit-sign" src={close} alt="Кнопка выхода" />
+                </button>
+                <div className='popup__box'>
+                    <img className='popup__sign' src={status} alt='' />
+                    <p className='popup__message'>{props.tooltipMessage}</p>
+                </div>
             </div>
         </div>
     );

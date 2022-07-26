@@ -1,10 +1,15 @@
 import React from 'react';
-import { Switch, Route, Link } from 'react-router-dom';
+import { useLocation, Switch, Route, Link } from 'react-router-dom';
 import logo from '../images/logo.svg';
+
 function Header(props) {
 
-
-
+    const location = useLocation();
+    function handleLinkClick(){
+        if (location.pathname === '/') { 
+            props.onSignOut();
+        }
+    }
 
     return (
         <header className="header page__borders">
@@ -12,17 +17,15 @@ function Header(props) {
             <Switch>
                 <Route exact path={'/'}>
                     <p className='header__link'>{props.email}</p>
-                    <Link to='/signin' className='header__link'>Выйти</Link>
+                    <Link to='/sign-in' className='header__link' onClick={handleLinkClick}>Выйти</Link>
                 </Route>
-                <Route path={'/signin'}>
-                    <Link to='/signup' className='header__link'>Регистрация</Link>
+                <Route path={'/sign-in'}>
+                    <Link to='/sign-up' className='header__link'>Регистрация</Link>
                 </Route>
-                <Route path={'/signup'}>
-                    <Link to='/signin' className='header__link'>Войти</Link>
+                <Route path={'/sign-up'}>
+                    <Link to='/sign-in' className='header__link'>Войти</Link>
                 </Route>
-
             </Switch>
-
         </header>
     )
 }

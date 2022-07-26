@@ -1,12 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 
-//import logo from '../images/logo.svg';
-
-
 function Register(props) {
-    const [email, setEmail] = React.useState('');
-    const [password, setPassword] = React.useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
 
     function handleEmailChange(e) {
         setEmail(e.target.value)
@@ -22,8 +19,8 @@ function Register(props) {
 
     return (
         <div className='access'>
+            <h2 className='access__header'>Регистрация</h2>
             <form className='access__form' onSubmit={handleSubmit}>
-                <h2 className='access__header'>Регистрация</h2>
                 <input className='access__input'
                     name="email" type='email'
                     placeholder='Email' required
@@ -35,11 +32,9 @@ function Register(props) {
                 <button className="access__button" type="submit">Зарегистрироваться</button>
             </form>
             <p className='access__caption'>Уже зарегистрированы?
-                <Link to='signin' className='access__link'> Войти</Link>
+                <Link to='sign-in' className='access__link'> Войти</Link>
             </p>
         </div>
     )
-
-
 }
 export default withRouter(Register);

@@ -31,14 +31,17 @@ class Api {
       .then(this._checkError)
   }
 
-  editProfileInfo(data) {
+  editProfileInfo(name, about) {
     return fetch(this._url + '/users/me', {
       method: 'PATCH',
       headers: {
         authorization: this._token,
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(data)
+      body: JSON.stringify({
+        name: name,
+        about: about
+      })
     })
       .then(this._checkError)
   }
@@ -67,11 +70,11 @@ class Api {
   }
   updateСardLike(cardId, isLiked) {
     if (isLiked) {
-        return this._like(cardId);
+      return this._like(cardId);
     } else {
-        return this._dislike(cardId);        
+      return this._dislike(cardId);
     }
-}
+  }
   _like(cardId) {
     return fetch(this._url + `/cards/${cardId}/likes`, {
       method: 'PUT',
@@ -91,7 +94,7 @@ class Api {
     })
       .then(this._checkError)
   }
-  
+
   editAvatar(data) {
     return fetch(this._url + '/users/me/avatar', {
       method: 'PATCH',
@@ -99,7 +102,9 @@ class Api {
         authorization: this._token,
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(data)
+      body: JSON.stringify({
+        avatar: data
+      })
     })
       .then(this._checkError)
   }

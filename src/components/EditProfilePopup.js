@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import PopupWithForm from "./PopupWithForm";
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
 
-function EditProfilePopup({ isOpen, onClose, onUpdateUser }) {
+function EditProfilePopup(props) {
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
 
@@ -12,7 +12,7 @@ function EditProfilePopup({ isOpen, onClose, onUpdateUser }) {
     useEffect(() => {
         setName(currentUser.name);
         setDescription(currentUser.about);
-    }, [currentUser, isOpen]);
+    }, [currentUser, props.isOpen]);
 
     function handleNameChange(e) {
         setName(e.target.value);
@@ -24,22 +24,20 @@ function EditProfilePopup({ isOpen, onClose, onUpdateUser }) {
 
     function handleSubmit(e) {
         e.preventDefault();
-
         // Передаём значения управляемых компонентов во внешний обработчик
-        onUpdateUser({
-            name: name,
+        props.onUpdateUser({
+            name,
             about: description,
         });
     }
 
     return (
-
         <PopupWithForm
-            isOpen={isOpen}
+            isOpen={props.isOpen}
             name='edit'
             title='Редактировать профиль'
             buttonText='Сохранить'
-            onClose={onClose}
+            onClose={props.onClose}
             onSubmit={handleSubmit}
         >
             <input
@@ -50,7 +48,6 @@ function EditProfilePopup({ isOpen, onClose, onUpdateUser }) {
                 name="userName"
                 minLength="2"
                 maxLength="40"
-                autoComplete="off"
                 onChange={handleNameChange}
                 value={name || ''}
                 required />
@@ -64,7 +61,6 @@ function EditProfilePopup({ isOpen, onClose, onUpdateUser }) {
                 name="description"
                 minLength="2"
                 maxLength="200"
-                autoComplete="off"
                 onChange={handleDescriptionChange}
                 value={description || ''}
                 required />
