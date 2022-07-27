@@ -24,10 +24,10 @@ function App(props) {
     const [isEditProfilePopupOpen, setisEditProfilePopupOpen] = useState(false);
     const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
     const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
-    const [isInfoTooltipPopupOpen, setIsInfoTooltipOpen] = useState(false);
-    const [selectedCard, setSelectedCard] = useState('');
+    const [isInfoTooltipPopupOpen, setIsInfoTooltipPopupOpen] = useState(false);
+    const [selectedCard, setSelectedCard] = useState({});
     const [cards, setCards] = useState([]);
-    const [currentUser, setCurrentUser] = useState({});
+    const [currentUser, setCurrentUser] = useState({ name: '', link: '', about: '' });
     const [email, setEmail] = useState('');
     const [tooltipMessage, setTooltipMessage] = useState('');
     const [tooltipStatus, setTooltipStatus] = useState(false);
@@ -116,7 +116,7 @@ function App(props) {
     }
     function handleLogin(email) {
         setEmail(email);
-        props.history.push('/main');
+        props.history.push('/');
     }
 
     function handleAuthorize(email, password) {
@@ -125,21 +125,18 @@ function App(props) {
                 if (data.token) {
                     localStorage.setItem('token', data.token);
                     handleLogin(email);
-                } else {
-                    handleInfoTooltipClick('Неверный логин или пароль', false)
                 }
             })
-            .catch(handleInfoTooltipClick('Что-то пошло не так! Попробуйте ещё раз.', false));
+            .catch(res=>handleInfoTooltipClick('Что-то пошло не так! Попробуйте ещё раз.', false));
     }
 
     function handleRegister(email, password) {
         Auth.register(email, password)
-            .then((res) => {
-                handleInfoTooltipClick(
-                    res.error ? 'Что-то пошло не так! Попробуйте ещё раз.' : 'Вы успешно зарегистрировались!', !res.error
-                );
+            .then(() => {
+                handleInfoTooltipClick('Вы успешно зарегистрировались!', true);
+                handleAuthorize(email, password);
             })
-            .catch(err => console.log(err));
+            .catch(res =>handleInfoTooltipClick('Что-то пошло не так! Попробуйте ещё раз.', false));
     }
 
     function handleSignOut() {
@@ -159,9 +156,9 @@ function App(props) {
         setIsEditAvatarPopupOpen(!isEditAvatarPopupOpen);
     };
     function handleInfoTooltipClick(tooltipMessage, tooltipStatus) {
-        setIsInfoTooltipOpen(true);
         setTooltipMessage(tooltipMessage);
         setTooltipStatus(tooltipStatus);
+        setIsInfoTooltipPopupOpen(true);
     }
 
     function handleCardClick(card) {
@@ -173,8 +170,8 @@ function App(props) {
         setisEditProfilePopupOpen(false);
         setIsAddPlacePopupOpen(false);
         setIsEditAvatarPopupOpen(false);
-        setIsInfoTooltipOpen(false);
-        setSelectedCard('');
+        setIsInfoTooltipPopupOpen(false);
+        setSelectedCard({});
     }
 
     return (
@@ -197,17 +194,14 @@ function App(props) {
                             />
 
                         </Route>
-                            //для регистрации пользователя
                         <Route path="/sign-up">
                             <Register onRegister={handleRegister} />
                         </Route>
-                            //для авторизации пользователя
                         <Route path="/sign-in">
                             <Login onAuthorize={handleAuthorize} />
                         </Route>
 
                         <Redirect to={email ? '/' : '/sign-in'} />
-                        <InfoTooltip isOpen={isInfoTooltipPopupOpen} tooltipMessage={tooltipMessage} tooltipStatus={tooltipStatus} onClose={closeAllPopups} />
                     </Switch>
                     <Footer />
                 </div>
@@ -218,6 +212,7 @@ function App(props) {
                     card={selectedCard}
                     onClose={closeAllPopups}
                 ></ImagePopup>
+                <InfoTooltip isOpen={isInfoTooltipPopupOpen} tooltipMessage={tooltipMessage} tooltipStatus={tooltipStatus} onClose={closeAllPopups} />
 
             </div>
         </CurrentUserContext.Provider>

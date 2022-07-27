@@ -9,7 +9,7 @@ function ImagePopup(props) {
         };
     }
     return (
-        <div className={`popup popup_picture ${props.card && 'popup_opened'}`} onClick={handleOverlayClick}>
+        <div className={`popup popup_picture ${props.card.link && 'popup_opened'}`} onClick={handleOverlayClick}>
             <form className="form" name="pic-form">
                 <div className="popup__container-image">
                     <img className="popup__image" src={props.card.link} alt={props.card.name} />

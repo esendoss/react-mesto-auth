@@ -13,7 +13,7 @@ function InfoTooltip(props) {
                     <img className="popup__exit-sign" src={close} alt="Кнопка выхода" />
                 </button>
                 <div className='popup__box'>
-                    <img className='popup__sign' src={status} alt='' />
+                    <img className='popup__sign' src={status} alt={props.tooltipStatus ? 'Успех' : 'Ошибка'} />
                     <p className='popup__message'>{props.tooltipMessage}</p>
                 </div>
             </div>

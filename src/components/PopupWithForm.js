@@ -14,7 +14,7 @@ function PopupWithForm(props) {
             onClick={handleOverlayClick}
         >
             <div className="popup__container">
-                <form className="form" name={props.name} type="submit" noValidate onSubmit={props.onSubmit} >
+                <form className="form" name={props.name} type="submit" onSubmit={props.onSubmit} >
                     <button className="popup__exit popup__exit_edit" type="button" onClick={props.onClose}>
                         <img className="popup__exit-sign" src={close} alt="Кнопка выхода" />
                     </button>

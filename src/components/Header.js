@@ -7,16 +7,16 @@ function Header(props) {
         <header className="header page__borders">
             <img className="header__logo" src={logo} alt="Логотип проекта Mesto" />
             <Switch>
-                <Route exact path={'/'}>
+                <Route exact path='/'>
                     <div className='header__container'>
                         <p className='header__link header__link-email'>{props.email}</p>
                         <Link to='/sign-in' className='header__link'>Выйти</Link>
                     </div>
                 </Route>
-                <Route path={'/sign-in'}>
+                <Route path='/sign-in'>
                     <Link to='/sign-up' className='header__link'>Регистрация</Link>
                 </Route>
-                <Route path={'/sign-up'}>
+                <Route path='/sign-up'>
                     <Link to='/sign-in' className='header__link'>Войти</Link>
                 </Route>
             </Switch>
