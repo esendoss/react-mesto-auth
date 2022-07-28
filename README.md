@@ -25,4 +25,5 @@
 **Как запустить проект**
 ---
 1. Клонировать репозиторий: `git clone https://github.com/esendoss/react-mesto-auth.git`
+2. Запустить команду `npm install` в папке проекта.
 3. Запустить команду `npm start`. Проект запустится по ссылке http://localhost:3000 в браузере. 
